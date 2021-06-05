@@ -21,6 +21,7 @@ namespace Minesweeper
     /// </summary>
     public partial class MainWindow : Window
     {
+        private DispatcherTimer dTimer;
         private Random random;
         private Frame frame;
         private Grid Field;
@@ -29,6 +30,8 @@ namespace Minesweeper
         private int fieldSize;
         private const int fieldUnitSize = 40;
         private bool firstClick;
+        private int mineCounter;
+        private int timer;
 
         public MainWindow()
         {
@@ -41,15 +44,28 @@ namespace Minesweeper
             Field = new Grid();
             ListTales = new List<FieldTale>(this.bombCount);
             fieldSize = 10;
-            bombCount = 20;
+            bombCount = 15;
+            dTimer = new DispatcherTimer();
+            dTimer.Tick += DispatcherTimer_Tick;
+            dTimer.Interval = new TimeSpan(0, 0, 1);
+            timer = 0;
+            mineCounter = bombCount;
+            txtMineCounter.Text = mineCounter.ToString();
 
             this.frame.Width = fieldUnitSize * fieldSize;
             this.frame.Height = fieldUnitSize * fieldSize;
-            this.MinWidth = this.frame.Width + 100;
-            this.MinHeight = this.frame.Height + 200;
+            this.MinWidth = this.frame.Width + 50;
+            this.MinHeight = this.frame.Height + 150;
             CreateGrid();
             PrepareField();
         }
+
+        private void DispatcherTimer_Tick(object sender, EventArgs e)
+        {
+            timer++;
+            txtTimer.Text = timer.ToString();
+        }
+
         private void CreateGrid()
         {
             for (int i = 0; i < this.fieldSize; i++)
@@ -68,7 +84,6 @@ namespace Minesweeper
             this.frame.Background = new SolidColorBrush(Colors.White);
             Grid.SetRow(this.frame, 1);
             Grid.SetColumn(this.frame, 0);
-            Grid.SetColumnSpan(this.frame, 3);
             mainGrid.Children.Add(this.frame);
 
         }
@@ -145,6 +160,7 @@ namespace Minesweeper
             if (firstClick)
             {
                 firstClick = false;
+                dTimer.Start();
                 int indexOfFirstFieldTale = Field.Children.IndexOf(tale);
                 InitializeField(indexOfFirstFieldTale);
             }
@@ -165,8 +181,13 @@ namespace Minesweeper
             {
                 tale.Flag = false;
                 tale.Content = "";
+                mineCounter++;
+                txtMineCounter.Text = mineCounter.ToString();
                 return;
             }
+
+            if (mineCounter == 0)
+                return;
 
             tale.Flag = true;
 
@@ -175,6 +196,8 @@ namespace Minesweeper
                 Source = new BitmapImage(new Uri("Resources/flag.png", UriKind.Relative)),
                 VerticalAlignment = VerticalAlignment.Center
             };
+            mineCounter--;
+            txtMineCounter.Text = mineCounter.ToString();
         }
 
       
@@ -241,9 +264,9 @@ namespace Minesweeper
 
         private void GameOver(FieldTale tale = null)
         {
-           
-           
-                tale.IsEnabled = false;
+
+            dTimer.Stop();
+            tale.IsEnabled = false;
                
                 tale.Content = new Image
                 {
@@ -295,13 +318,15 @@ namespace Minesweeper
 
         private void GameWon()
         {
+            dTimer.Stop();
             foreach (FieldTale tale in ListTales)
             {
                 tale.IsEnabled = false;
                 if (tale.Bomb && !tale.Flag)
                 {
                     tale.Flag = true;
-                   
+                    mineCounter--;
+                    txtMineCounter.Text = mineCounter.ToString();
                     tale.Content = new Image
                     {
                         Source = new BitmapImage(new Uri("Resources/flag.png", UriKind.Relative)),
@@ -309,6 +334,7 @@ namespace Minesweeper
                     };
                 }
             }
+            MessageBox.Show("Вы выиграли");
         }
 
         private void SetTextblockStyle(TextBlock tb)
