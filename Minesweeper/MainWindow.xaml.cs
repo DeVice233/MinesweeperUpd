@@ -21,6 +21,7 @@ namespace Minesweeper
     /// </summary>
     public partial class MainWindow : Window
     {
+        TextBlockForegroundStyle TextBlockForegroundStyle = new TextBlockForegroundStyle();
         private DispatcherTimer dTimer;
         private Random random;
         private Frame frame;
@@ -89,10 +90,10 @@ namespace Minesweeper
         }
         private void PrepareField()
         {
-            this.firstClick = true;
-            for (int i = 0; i < this.fieldSize; i++)
+            firstClick = true;
+            for (int i = 0; i < fieldSize; i++)
             {
-                for (int j = 0; j < this.fieldSize; j++)
+                for (int j = 0; j < fieldSize; j++)
                 {
                     FieldTale tale = new FieldTale(false, 0, i, j);
                     ListTales.Add(tale);
@@ -101,7 +102,7 @@ namespace Minesweeper
                     Grid.SetColumn(tale, j);
                     Field.Children.Add(tale);
 
-                    tale.Click += FieldUnit_click;
+                    tale.Click += FieldTale_click;
                     tale.MouseRightButtonUp += FieldTale_right_click;
                 }
             }
@@ -154,7 +155,7 @@ namespace Minesweeper
             }
         }
 
-        private void FieldUnit_click(object sender, EventArgs e)
+        private void FieldTale_click(object sender, EventArgs e)
         {
             FieldTale tale = sender as FieldTale;
             if (firstClick)
@@ -224,7 +225,7 @@ namespace Minesweeper
                 textblock.Text = tale.AroundBombs.ToString();
                 textblock.FontSize = 30;
             }
-            SetTextblockStyle(textblock);
+            TextBlockForegroundStyle.SetTextblockStyle(textblock);
             Field.Children.Remove(tale);
             Border border = new Border
             {
@@ -335,42 +336,6 @@ namespace Minesweeper
                 }
             }
             MessageBox.Show("Вы выиграли");
-        }
-
-        private void SetTextblockStyle(TextBlock tb)
-        {
-            switch (tb.Text)
-            {
-                case "0":
-                    tb.Text = "";
-                    break;
-                case "1":
-                    tb.Foreground = Brushes.Blue;
-                    break;
-                case "2":
-                    tb.Foreground = Brushes.Green;
-                    break;
-                case "3":
-                    tb.Foreground = Brushes.Red;
-                    break;
-                case "4":
-                    tb.Foreground = Brushes.DarkBlue;
-                    break;
-                case "5":
-                    tb.Foreground = Brushes.Brown;
-                    break;
-                case "6":
-                    tb.Foreground = Brushes.Aqua;
-                    break;
-                case "7":
-                    tb.Foreground = Brushes.Black;
-                    break;
-                case "8":
-                    tb.Foreground = Brushes.LightGray;
-                    break;
-                default:
-                    break;
-            }
         }
     }
 }
