@@ -1,0 +1,24 @@
+﻿<Window x:Class="Minesweeper.StartWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Minesweeper"
+        mc:Ignorable="d"
+        Title="MineSweeper" Height="600" Width="500" WindowStartupLocation="CenterScreen" Background="LightSeaGreen">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="150"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <StackPanel Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <TextBlock Text="MINESWEEPER" FontSize="48" FontFamily="MS UI Gothic" FontWeight="Bold" TextDecorations="{x:Null}" FontStyle="Normal" />
+        </StackPanel>
+        <StackPanel Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <RadioButton Content="Easy" Style="{StaticResource RadioButtonStyle}" IsChecked="True" Click="Radiobutton_dificulty_change"/>
+            <RadioButton Content="Medium" Style="{StaticResource RadioButtonStyle}" Click="Radiobutton_dificulty_change" Margin="0 20 0 0" />
+            <RadioButton Content="Hard" Style="{StaticResource RadioButtonStyle}" Click="Radiobutton_dificulty_change" Margin="0 20 0 0" />
+        </StackPanel>
+        <Button Grid.Row="1" Height=" 30" Width="120" Margin="0 250 0 0" Content="Играть" FontSize="18" Click="Button_Click"/>
+    </Grid>
+</Window>

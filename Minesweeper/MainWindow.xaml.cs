@@ -37,15 +37,35 @@ namespace Minesweeper
         public MainWindow()
         {
             InitializeComponent();
-            GenerateMap();
+           
         }
-        public void GenerateMap()
+        public MainWindow(string dificulty) : this()
+        {
+            InitializeComponent();
+            GenerateMap(dificulty);
+        }
+        public void GenerateMap(string dificulty)
         {
             frame = new Frame();
             Field = new Grid();
             ListTales = new List<FieldTale>(this.bombCount);
-            fieldSize = 10;
-            bombCount = 15;
+            switch (dificulty)
+            {
+                case "Easy":
+                    fieldSize = 9;
+                    bombCount = 10;
+                    break;
+                case "Medium":
+                    fieldSize = 12;
+                    bombCount = 20;
+                    break;
+                case "Hard":
+                    fieldSize = 15;
+                    bombCount = 30;
+                    break;
+                default:
+                    break;
+            }
             dTimer = new DispatcherTimer();
             dTimer.Tick += DispatcherTimer_Tick;
             dTimer.Interval = new TimeSpan(0, 0, 1);
@@ -303,6 +323,10 @@ namespace Minesweeper
                     }
                 }
             }
+
+            MessageBox.Show("Вы проиграли");
+            new StartWindow().Show();
+            Close();
         }
 
         private bool AllOpened()
@@ -335,7 +359,9 @@ namespace Minesweeper
                     };
                 }
             }
-            MessageBox.Show("Вы выиграли");
+            MessageBox.Show($"Вы выиграли\nВаше вермя - {timer} сек");
+            new StartWindow().Show();
+            Close();
         }
     }
 }
