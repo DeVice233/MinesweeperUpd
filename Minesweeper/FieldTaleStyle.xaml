@@ -8,7 +8,8 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
-                    <Border Name="border" BorderThickness="2" BorderBrush="#303030" Background="{TemplateBinding Background}">
+                    <Border Name="border" BorderThickness="2" BorderBrush="#303030"
+                            Background="{TemplateBinding Background}">
                         <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
                     </Border>
                     <ControlTemplate.Triggers>

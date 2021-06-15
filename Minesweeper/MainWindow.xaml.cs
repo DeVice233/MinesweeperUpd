@@ -61,7 +61,7 @@ namespace Minesweeper
                     break;
                 case "Hard":
                     fieldSize = 15;
-                    bombCount = 30;
+                    bombCount = 40;
                     break;
                 default:
                     break;
@@ -72,13 +72,12 @@ namespace Minesweeper
             timer = 0;
             mineCounter = bombCount;
             txtMineCounter.Text = mineCounter.ToString();
-
             this.frame.Width = fieldUnitSize * fieldSize;
             this.frame.Height = fieldUnitSize * fieldSize;
             this.MinWidth = this.frame.Width + 50;
             this.MinHeight = this.frame.Height + 150;
             CreateGrid();
-            PrepareField();
+           
         }
 
         private void DispatcherTimer_Tick(object sender, EventArgs e)
@@ -100,13 +99,12 @@ namespace Minesweeper
                 BorderBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#303030")),
                 Child = Field
             };
-
             this.frame.Content = border;
             this.frame.Background = new SolidColorBrush(Colors.White);
             Grid.SetRow(this.frame, 1);
             Grid.SetColumn(this.frame, 0);
             mainGrid.Children.Add(this.frame);
-
+            PrepareField();
         }
         private void PrepareField()
         {
@@ -121,7 +119,6 @@ namespace Minesweeper
                     Grid.SetRow(tale, i);
                     Grid.SetColumn(tale, j);
                     Field.Children.Add(tale);
-
                     tale.Click += FieldTale_click;
                     tale.MouseRightButtonUp += FieldTale_right_click;
                 }
@@ -135,7 +132,6 @@ namespace Minesweeper
             List<int> ListBombs = new List<int>(this.fieldSize);
             ListBombs.Add(indexOfFirstFieldTale);
             int rng;
-
             for (int k = 0; k < this.bombCount; k++)
             {
                 rng = random.Next(0, fieldTaleCount - 1);
@@ -152,7 +148,6 @@ namespace Minesweeper
                     ListTales[rng].IsOpened = false;
                     int row = Grid.GetRow(ListTales[rng]);
                     int colloumn = Grid.GetColumn(ListTales[rng]);
-
                     for (int i = -1; i < 2; i++)
                     {
                         for (int j = -1; j < 2; j++)
@@ -162,12 +157,9 @@ namespace Minesweeper
 
                             if (r < 0 || r > fieldSize - 1 || c < 0 || c > fieldSize - 1)
                                 continue;
-
                             FieldTale tale = FieldTale.GetTale(ListTales, r, c);
-
                             if (tale.Bomb || (i == 0 && j == 0))
                                 continue;
-
                             tale.AroundBombs++;
                         }
                     }
@@ -185,19 +177,14 @@ namespace Minesweeper
                 int indexOfFirstFieldTale = Field.Children.IndexOf(tale);
                 InitializeField(indexOfFirstFieldTale);
             }
-            if (tale.Flag)
-                return;
-
+            if (tale.Flag) return;
             OpenField(tale);
-
-            if (AllOpened())
-                GameWon();
+            if (AllOpened()) GameWon();
         }
 
-        private void FieldTale_right_click(object sender, System.EventArgs e)
+        private void FieldTale_right_click(object sender, EventArgs e)
         {
             FieldTale tale = sender as FieldTale;
-
             if (tale.Flag)
             {
                 tale.Flag = false;
@@ -206,12 +193,9 @@ namespace Minesweeper
                 txtMineCounter.Text = mineCounter.ToString();
                 return;
             }
-
             if (mineCounter == 0)
                 return;
-
             tale.Flag = true;
-
             tale.Content = new Image
             {
                 Source = new BitmapImage(new Uri("Resources/flag.png", UriKind.Relative)),
@@ -225,16 +209,13 @@ namespace Minesweeper
         private void OpenField(FieldTale tale)
         {
             tale.IsOpened = true;
-
             int row = Grid.GetRow(tale);
             int column = Grid.GetColumn(tale);
-
             TextBlock textblock = new TextBlock
             {
                 HorizontalAlignment = HorizontalAlignment.Center,
                 VerticalAlignment = VerticalAlignment.Center
             };
-
             if (tale.Bomb)
             {
                 GameOver(tale);
@@ -256,7 +237,6 @@ namespace Minesweeper
             Grid.SetRow(border, row);
             Grid.SetColumn(border, column);
             Field.Children.Add(border);
-
             if (tale.AroundBombs == 0)
             {
                 for (int i = -1; i < 2; i++)
@@ -285,17 +265,13 @@ namespace Minesweeper
 
         private void GameOver(FieldTale tale = null)
         {
-
             dTimer.Stop();
             tale.IsEnabled = false;
-               
                 tale.Content = new Image
                 {
                     Source = new BitmapImage(new Uri("Resources/mine_blown.png", UriKind.Relative)),
                     VerticalAlignment = VerticalAlignment.Center
                 };
-          
-
             foreach (FieldTale ftale in ListTales)
             {
                 ftale.IsEnabled = false;
@@ -310,7 +286,6 @@ namespace Minesweeper
                         VerticalAlignment = VerticalAlignment.Center
                     };
                 }
-
                 else
                 {
                     if (ftale.Flag)
@@ -323,7 +298,6 @@ namespace Minesweeper
                     }
                 }
             }
-
             MessageBox.Show("Вы проиграли");
             new StartWindow().Show();
             Close();

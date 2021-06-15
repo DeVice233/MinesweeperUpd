@@ -28,10 +28,10 @@ namespace Minesweeper
 
         public static FieldTale GetTale(List<FieldTale> ListTales, int i, int j)
         {
-            foreach (FieldTale fu in ListTales)
+            foreach (FieldTale fieldTale in ListTales)
             {
-                if (fu.Row == i && fu.Collumn == j)
-                    return fu;
+                if (fieldTale.Row == i && fieldTale.Collumn == j)
+                    return fieldTale;
             }
             return null;
         }
